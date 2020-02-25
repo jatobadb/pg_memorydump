@@ -1,0 +1,19 @@
+# pg_memorydump extension
+comment = 'stats of memory context allocated memory usage'
+default_version = '1.0'
+module_pathname = '$libdir/pg_memorydump'
+relocatable = true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
