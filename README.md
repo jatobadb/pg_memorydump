@@ -12,6 +12,7 @@ All the sizes are in bytes.
 | id | unique autoincrement id (not a real part of the context source structure) |
 | parent_id | all contexts are organized in hierarchical tree structure. This is the id of contexts parent|
 | initBlockSize | every new created context has its own initial size of block, which is used to determine the size of blocks in the context. It will be multiplied by 2 each time the size of new allocated chunk will exceed allocchunklimit |
+| maxblocksize | limit of the block size |
 | nblocks | current count of blocks in the context |
 | totalsize | total size of the context |
 | freespace | total size of avaliable to allocate memory in the context |
