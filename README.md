@@ -8,7 +8,7 @@ All the sizes are in bytes.
 | Column | Description |
 | --------- |------|
 | contextname | name of the context |
-| contexttype | type of the context (M - T_MemoryContext, A - T_AllocSetContext, T - T_SlabContext, O - Other types (T_GenerationContext since 11.* versions))|
+| contexttype | type of the context (M - T_MemoryContext, A - T_AllocSetContext, S - T_SlabContext, O - Other types (T_GenerationContext since 11.* versions))|
 | id | unique autoincrement id (not a real part of the context source structure) |
 | parent_id | all contexts are organized in hierarchical tree structure. This is the id of contexts parent|
 | initBlockSize | every new created context has its own initial size of block, which is used to determine the size of blocks in the context. It will be multiplied by 2 each time the size of new allocated chunk will exceed allocchunklimit |
