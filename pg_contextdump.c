@@ -85,7 +85,7 @@ typedef struct AllocSetContext{
 void _PG_init(void);
 void _PG_fini(void);
 
-Datum pg_memorydump(PG_FUNCTION_ARGS);
+Datum pg_contextdump(PG_FUNCTION_ARGS);
 
 static void MxtCacheInitialize(void);
 static MxtStat* MxtAllocSetStats(MemoryContext context,unsigned int* parentid);
@@ -102,13 +102,13 @@ void _PG_init(void){
 void _PG_fini(void){
 }
 
-PG_FUNCTION_INFO_V1(pg_memorydump);
+PG_FUNCTION_INFO_V1(pg_contextdump);
 
 static HTAB *MxtCache;
 static unsigned int cacheid = 0;
 
 Datum 
-pg_memorydump(PG_FUNCTION_ARGS)
+pg_contextdump(PG_FUNCTION_ARGS)
 {
 	
 	FuncCallContext* funcctx;
@@ -127,7 +127,7 @@ pg_memorydump(PG_FUNCTION_ARGS)
         MxtMemoryContextStats(TopMemoryContext);
 
 		/*
-		 * Max count of function calls is equal to actual number of contexts
+		 * Max count of function calls is equal to the actual number of contexts
 		*/
 
         funcctx->max_calls = hash_get_num_entries(MxtCache);
@@ -182,12 +182,10 @@ pg_memorydump(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-        /* 
-		 * finish seq_search
-		*/
-		//pfree(mxt_status);
+
+        /* finish seq_search */                  
         if (hash_seq_search((HASH_SEQ_STATUS*)funcctx->user_fctx))
-            elog(ERROR, "pg_memorydump: leaked scan hash table");
+            elog(ERROR, "pg_contextdump: leaked scan hash table");
         SRF_RETURN_DONE(funcctx);
     }
 }
@@ -213,10 +211,10 @@ MxtCacheInitialize(void)
     mxt_ctl.entrysize = sizeof(MxtStat);
     mxt_ctl.hash = tag_hash;
     mxt_ctl.hcxt = CurrentMemoryContext;
-    MxtCache = hash_create("pg_memorydump hash table", MXT_NAME_NUMBER, &mxt_ctl, HASH_ELEM | HASH_FUNCTION | HASH_CONTEXT);
+    MxtCache = hash_create("pg_contextdump hash table", MXT_NAME_NUMBER, &mxt_ctl, HASH_ELEM | HASH_FUNCTION | HASH_CONTEXT);
 
     if (MxtCache == NULL)
-        elog(ERROR, "pg_memorydump: can't create a hash table");
+        elog(ERROR, "pg_contextdump: can't create a hash table");
 }
 
 
@@ -353,10 +351,11 @@ HistStr(unsigned int* histogramm)
 	*/
 
 	int length = HistogrammDigitsCnt(histogramm) + 13;
-	char* histstr = (char*)palloc(length * sizeof(char));
-	histstr[0] = '{';
+	char* histstr = (char*) palloc(length * sizeof(char));
+	int j;
 	
-	int j = 1; // number of symbols, already have been written
+	histstr[0] = '{';
+	j = 1; // number of symbols, already have been written
 
 	for (int i = 0; i < INTERVALS_IN_HISTOGRAMM; i++) 
 	{
@@ -407,12 +406,12 @@ MxtFillValues(MxtStat* mxt_stat)
 	snprintf(values[1], 2, "%c",mxt_stat->type);
 	snprintf(values[2], 16, "%u", mxt_stat->id);
 	snprintf(values[3], 16, "%u", mxt_stat->parentid);
-	snprintf(values[4], 16, "%u", mxt_stat->initBlockSize);
-	snprintf(values[5], 16, "%u", mxt_stat->maxBlockSize);
-	snprintf(values[6], 16, "%u", mxt_stat->allocChunkLimit);
-	snprintf(values[7], 16, "%u", mxt_stat->nblocks);
-	snprintf(values[8], 16, "%u", mxt_stat->totalspace);
-	snprintf(values[9], 16, "%u", mxt_stat->freespace);
+	snprintf(values[4], 16, "%lu", mxt_stat->initBlockSize);
+	snprintf(values[5], 16, "%lu", mxt_stat->maxBlockSize);
+	snprintf(values[6], 16, "%lu", mxt_stat->allocChunkLimit);
+	snprintf(values[7], 16, "%lu", mxt_stat->nblocks);
+	snprintf(values[8], 16, "%lu", mxt_stat->totalspace);
+	snprintf(values[9], 16, "%lu", mxt_stat->freespace);
 	values[10] = HistStr(mxt_stat->histogramm);
 	
 	return values;
