@@ -50,6 +50,7 @@ shared_preload_libraries = 'pg_contextdump'
 Restart the PostgreSQL instance:
 ```shell
 pg_ctl restart
+```
 
 After that, execute the following query in psql:
 ```plpgsql
