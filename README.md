@@ -15,7 +15,7 @@ All the sizes are in bytes.
 | nblocks | current count of blocks in the context |
 | totalsize | total size of the context |
 | freespace | total size of avaliable to allocate memory in the context |
-| count |  i-value shows how many chunks in the context have the size between i and (i+1) tenth proportions of ( chunk size / allocchunklimit ). The last one shows count of chunks, which exceed allocchunklimit  |
+| histogramm |  i-value shows how many blocks in the context have size between i and (i+1) tenth proportions of ( size of block / allocchunklimit ). The last one shows count of blocks exceeded allocchunklimit  |
 
 
 For example:
