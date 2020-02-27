@@ -5,6 +5,7 @@ The extension is compatible with PostgreSQL 11.5. On the newer versions needs te
 
 All the sizes are in bytes.
 
+| Column | Description |
 | --------- |------|
 | contextname | name of the context |
 | contexttype | type of the context (M - T_MemoryContext, A - T_AllocSetContext, T - T_SlabContext, O - Other types (T_GenerationContext since 11.* versions))|
